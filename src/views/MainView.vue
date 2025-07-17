@@ -52,15 +52,15 @@
                     <li v-for="item in store.history" :key="item.id"
                         class="flex items-center gap-2 bg-[#49483e]/70 hover:bg-[#49483e]/90 rounded-lg px-3 py-2 transition-colors duration-150 cursor-pointer border-l-4 border-transparent hover:border-[#a6e22e] max-w-full">
                         <span class="text-xs font-bold px-2 py-1 rounded bg-[#272822] text-[#a6e22e]">{{ item.method
-                        }}</span>
+                            }}</span>
                         <span class="text-[#f8f8f2] truncate flex-1 min-w-0">{{ item.endpoint }}</span>
                         <span class="text-[#fd971f] text-xs">{{ item.time }}</span>
                         <span v-if="item.status !== undefined" class="text-green-400 text-xs font-mono">{{ item.status
-                        }}</span>
+                            }}</span>
                         <span v-if="item.responseTime !== undefined" class="text-blue-400 text-xs font-mono">{{
                             item.responseTime }}ms</span>
                         <span v-if="item.size !== undefined" class="text-pink-400 text-xs font-mono">{{ item.size
-                        }}B</span>
+                            }}B</span>
                     </li>
                 </ul>
             </div>
