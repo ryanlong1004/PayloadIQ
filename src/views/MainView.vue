@@ -1,9 +1,9 @@
 <template>
     <div class="h-full min-h-0 w-full min-w-0 px-2 md:px-0 grid gap-4 overflow-x-auto"
-        style="grid-template-columns: 1fr 1fr; grid-template-rows: minmax(45vh, 45vh) minmax(45vh, 45vh); background-color: #1b1b1b;">
+        style="grid-template-columns: repeat(12, 1fr); grid-template-rows: minmax(45vh, 45vh) minmax(45vh, 45vh) minmax(20vh, 1fr) minmax(20vh, 1fr); background-color: #1b1b1b;">
         <!-- Request Pane -->
         <section
-            class="bg-[#272822] rounded-xl shadow-2xl border border-[#f92672] h-full transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-1">
+            class="bg-[#272822] rounded-xl shadow-2xl border border-[#f92672] h-full min-h-[40vh] transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-6">
             <div class="flex items-center justify-between px-6 pt-6 pb-4">
                 <h2 class="text-lg md:text-xl font-bold text-cyan-400">Request</h2>
             </div>
@@ -13,7 +13,7 @@
         </section>
         <!-- Response Pane -->
         <section
-            class="bg-[#272822] rounded-xl shadow-2xl border border-[#a6e22e] h-full transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-1">
+            class="bg-[#272822] rounded-xl shadow-2xl border border-[#a6e22e] h-full min-h-[40vh] transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-6">
             <div class="flex items-center justify-between px-6 pt-6 pb-4">
                 <h2 class="text-lg md:text-xl font-bold text-purple-400 drop-shadow-[0_0_8px_purple]">Response</h2>
             </div>
@@ -43,7 +43,7 @@
         </section>
         <!-- History Pane -->
         <section
-            class="bg-[#272822] rounded-xl shadow-2xl border border-[#fd971f] h-full overflow-y-auto transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-2">
+            class="bg-[#272822] rounded-xl shadow-2xl border border-[#fd971f] h-full min-h-[40vh] overflow-y-auto transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-4">
             <div class="flex items-center justify-between px-6 pt-6 pb-4">
                 <h2 class="text-lg md:text-xl font-bold text-[#fd971f]">History</h2>
             </div>
@@ -65,13 +65,29 @@
                 </ul>
             </div>
         </section>
+        <!-- Curl Pane -->
+        <section
+            class="bg-[#272822] rounded-xl shadow-2xl border border-[#66d9ef] h-full min-h-[40vh] overflow-y-auto transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-4">
+            <div class="flex items-center justify-between px-6 pt-6 pb-4">
+                <h2 class="text-lg md:text-xl font-bold text-[#66d9ef]">cURL</h2>
+            </div>
+            <div class="flex-1 flex flex-col min-h-0 px-6 pb-6 overflow-auto">
+                <pre
+                    class="bg-[#272822] text-[#f8f8f2] p-4 rounded-lg text-xs font-mono whitespace-pre-wrap break-all border border-[#66d9ef] shadow-inner">
+            {{ curlCommand }}</pre>
+            </div>
+        </section>
     </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import fetchToCurl from 'fetch-to-curl';
 // Track collapsed state for each pane
-const collapsed = ref({ request: false, response: false, history: false });
+const collapsed = ref({ request: false, response: false, history: false, curl: false });
+
+// Curl command state
+const curlCommand = ref('');
 import { computed } from 'vue';
 import { useMainStore } from '../store';
 import RequestComposer from '../components/RequestComposer.vue';
@@ -113,10 +129,50 @@ async function sendRequest(request) {
             endpoint: request.url,
             time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         });
+        // Generate cURL command
+        curlCommand.value = generateCurlCommand(request);
     } catch (e) {
         store.setError(e.message || 'Request failed.');
+        curlCommand.value = '';
     } finally {
         store.setLoading(false);
     }
+}
+
+/**
+ * Generates a cURL command string based on the given HTTP request object.
+ * 
+ * @param {Object} request - The HTTP request object.
+ * @param {string} request.url - The URL of the request.
+ * @param {string} request.method - The HTTP method (e.g., 'GET', 'POST').
+ * @param {Object|string} [request.headers] - The headers for the request, either as an object or a JSON string.
+ * @param {string|undefined} [request.body] - The body of the request, if applicable.
+ * @returns {string} - A string representing the cURL command.
+ */
+function generateCurlCommand(request) {
+    // fetch-to-curl expects a fetch/XHR/request object
+    // We'll build a fetch-like object from our request
+    const fetchObj = {
+        url: request.url,
+        method: request.method,
+        headers: {},
+        body: undefined
+    };
+    if (request.headers) {
+        try {
+            fetchObj.headers = typeof request.headers === 'string' ? JSON.parse(request.headers) : request.headers;
+        } catch (error) {
+            console.error('Failed to parse headers:', error);
+            fetchObj.headers = {};
+        }
+    }
+    if (request.body) {
+        fetchObj.body = request.body;
+    }
+    return fetchToCurl(fetchObj.url, {
+        method: fetchObj.method,
+        headers: fetchObj.headers,
+        body: fetchObj.body
+    });
 }
 </script>
