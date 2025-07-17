@@ -69,7 +69,7 @@
         <section
             class="bg-[#272822] rounded-xl shadow-2xl border border-[#66d9ef] h-full min-h-[40vh] overflow-y-auto transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-4">
             <div class="flex items-center justify-between px-6 pt-6 pb-4">
-                <h2 class="text-lg md:text-xl font-bold text-[#66d9ef]">Curl</h2>
+                <h2 class="text-lg md:text-xl font-bold text-[#66d9ef]">cURL</h2>
             </div>
             <div class="flex-1 flex flex-col min-h-0 px-6 pb-6 overflow-auto">
                 <pre
