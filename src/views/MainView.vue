@@ -139,6 +139,16 @@ async function sendRequest(request) {
     }
 }
 
+/**
+ * Generates a cURL command string based on the given HTTP request object.
+ * 
+ * @param {Object} request - The HTTP request object.
+ * @param {string} request.url - The URL of the request.
+ * @param {string} request.method - The HTTP method (e.g., 'GET', 'POST').
+ * @param {Object|string} [request.headers] - The headers for the request, either as an object or a JSON string.
+ * @param {string|undefined} [request.body] - The body of the request, if applicable.
+ * @returns {string} - A string representing the cURL command.
+ */
 function generateCurlCommand(request) {
     // curlconverter expects a fetch/XHR/request object
     // We'll build a fetch-like object from our request
