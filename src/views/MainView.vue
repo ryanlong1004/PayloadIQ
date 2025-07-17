@@ -1,6 +1,6 @@
 <template>
     <div class="h-full min-h-0 w-full min-w-0 px-2 md:px-0 grid gap-4 overflow-x-auto"
-        style="grid-template-columns: 1fr 1fr; grid-template-rows: 40vh 40vh; background-color: #1b1b1b;">
+        style="grid-template-columns: 1fr 1fr; grid-template-rows: minmax(40vh, 1fr) minmax(40vh, 1fr); background-color: #1b1b1b;">
         <!-- Request Pane -->
         <section
             class="bg-[#272822] rounded-xl shadow-2xl border border-[#f92672] h-full transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-1">
