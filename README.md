@@ -1,7 +1,7 @@
 # PayloadIQ: Postman Clone
 
 <p align="center">
-  <img src="src/assets/payload_iq_trans.png" alt="PayloadIQ Logo" width="300" />
+  <img src="src/assets/payload_iq.png" alt="PayloadIQ Logo" width="300" />
 </p>
 
 A modern Vue 3 + UnoCSS web app to compose and send HTTP requests, view responses, and manage request history. Features responsive design, micro-interactions, and robust state management with Pinia.
