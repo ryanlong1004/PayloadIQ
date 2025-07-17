@@ -1,6 +1,6 @@
 <template>
     <div class="h-full min-h-0 w-full min-w-0 px-2 md:px-0 grid gap-4 overflow-x-auto"
-        style="grid-template-columns: 1fr 1fr; grid-template-rows: 40vh 40vh; background-color: #1b1b1b;">
+        style="grid-template-columns: 1fr 1fr; grid-template-rows: minmax(40vh, 1fr) minmax(40vh, 1fr); background-color: #1b1b1b;">
         <!-- Request Pane -->
         <section
             class="bg-[#272822] rounded-xl shadow-2xl border border-[#f92672] h-full transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-1">
@@ -17,6 +17,18 @@
             <div class="flex items-center justify-between px-6 pt-6 pb-4">
                 <h2 class="text-lg md:text-xl font-bold text-purple-400 drop-shadow-[0_0_8px_purple]">Response</h2>
             </div>
+            <!-- Persistent Response Info Bar -->
+            <div class="flex gap-2 items-center px-6 pb-2">
+                <span v-if="response && response.status !== undefined"
+                    class="inline-block px-2 py-1 rounded-full bg-green-900 text-green-300 text-xs font-bold border border-green-400 shadow">Status:
+                    {{ response.status }}</span>
+                <span v-if="response && response.time !== undefined"
+                    class="inline-block px-2 py-1 rounded-full bg-blue-900 text-blue-300 text-xs font-bold border border-blue-400 shadow">Time:
+                    {{ response.time }} ms</span>
+                <span v-if="response && response.size !== undefined"
+                    class="inline-block px-2 py-1 rounded-full bg-pink-900 text-pink-300 text-xs font-bold border border-pink-400 shadow">Size:
+                    {{ response.size }} bytes</span>
+            </div>
             <div v-if="!collapsed.response" class="flex-1 flex flex-col min-h-0 px-6 pb-6 overflow-auto">
                 <template v-if="loading">
                     <div class="text-center text-cyan-400 py-8 animate-pulse">Loading...</div>
@@ -25,7 +37,7 @@
                     <div class="text-center text-red-400 py-8 animate-shake">{{ error }}</div>
                 </template>
                 <template v-else>
-                    <ResponseViewer :response="response" />
+                    <ResponseViewer :response="{ ...response, status: undefined, time: undefined, size: undefined }" />
                 </template>
             </div>
         </section>
@@ -43,6 +55,12 @@
                             }}</span>
                         <span class="text-[#f8f8f2] truncate flex-1 min-w-0">{{ item.endpoint }}</span>
                         <span class="text-[#fd971f] text-xs">{{ item.time }}</span>
+                        <span v-if="item.status !== undefined" class="text-green-400 text-xs font-mono">{{ item.status
+                            }}</span>
+                        <span v-if="item.responseTime !== undefined" class="text-blue-400 text-xs font-mono">{{
+                            item.responseTime }}ms</span>
+                        <span v-if="item.size !== undefined" class="text-pink-400 text-xs font-mono">{{ item.size
+                            }}B</span>
                     </li>
                 </ul>
             </div>
