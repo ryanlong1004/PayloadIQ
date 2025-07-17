@@ -1,14 +1,14 @@
 <template>
     <main class="flex flex-col md:flex-row gap-4 md:gap-8 h-full min-h-0 w-full px-2 md:px-0">
         <section
-            class="flex-1 flex flex-col bg-gradient-to-br from-gray-800/80 via-gray-900/70 to-gray-800/80 rounded-xl shadow-2xl p-6 border border-cyan-400 min-h-0 h-full justify-start transition-all duration-300 ease-in-out mb-4 md:mb-0 backdrop-blur-xl">
-            <h2 class="text-lg md:text-xl font-bold text-cyan-400 mb-4 drop-shadow-[0_0_8px_cyan]">Request</h2>
+            class="flex-1 flex flex-col bg-[#272822] rounded-xl shadow-2xl p-6 border border-[#f92672] min-h-0 h-full justify-start transition-all duration-300 ease-in-out mb-4 md:mb-0 backdrop-blur-xl">
+            <h2 class="text-lg md:text-xl font-bold text-cyan-400 mb-4">Request</h2>
             <div class="flex-1 flex flex-col min-h-0">
                 <RequestComposer :initialRequest="currentRequest" @send="sendRequest" />
             </div>
         </section>
         <section
-            class="flex-1 flex flex-col bg-gradient-to-br from-gray-800/80 via-gray-900/70 to-gray-800/80 rounded-xl shadow-2xl p-6 border border-purple-400 min-h-0 h-full justify-start overflow-auto transition-all duration-300 ease-in-out backdrop-blur-xl">
+            class="flex-1 flex flex-col bg-[#272822] rounded-xl shadow-2xl p-6 border border-[#a6e22e] min-h-0 h-full justify-start overflow-auto transition-all duration-300 ease-in-out backdrop-blur-xl">
             <h2 class="text-lg md:text-xl font-bold text-purple-400 mb-4 drop-shadow-[0_0_8px_purple]">Response</h2>
             <div class="flex-1 flex flex-col min-h-0 overflow-auto">
                 <template v-if="loading">

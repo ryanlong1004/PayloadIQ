@@ -18,21 +18,60 @@ import { HomeIcon, FolderIcon, Cog6ToothIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
 
 const sidebarOpen = ref(true);
+const sidebarWidth = ref(224); // Default width in px (14rem)
+const minSidebarWidth = 120;
+const maxSidebarWidth = 320;
+let isResizing = false;
+let resizeHandleClicked = false;
+
 function toggleSidebar() {
   sidebarOpen.value = !sidebarOpen.value;
 }
+
+function startResize(e) {
+  // Only start resizing if left mouse button and not a quick click
+  if (e.button === 0) {
+    isResizing = true;
+    resizeHandleClicked = false;
+    document.body.style.cursor = 'col-resize';
+  }
+}
+
+function handleResizeHandleClick(e) {
+  // If not resizing, treat as toggle
+  if (!isResizing) {
+    toggleSidebar();
+  }
+}
+
+function onResize(e) {
+  if (!isResizing) return;
+  const newWidth = e.clientX - document.querySelector('aside').getBoundingClientRect().left;
+  sidebarWidth.value = Math.max(minSidebarWidth, Math.min(maxSidebarWidth, newWidth));
+}
+
+function stopResize() {
+  isResizing = false;
+  document.body.style.cursor = '';
+}
+
+window.addEventListener('mousemove', onResize);
+window.addEventListener('mouseup', stopResize);
 </script>
 
 
 <template>
-  <div class="min-h-screen w-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 font-inter flex flex-col">
+  <div class="min-h-screen w-screen bg-[#272822] font-inter flex flex-col">
     <!-- Header -->
     <header
-      class="w-full h-14 bg-[#23233B]/80 backdrop-blur-xl flex items-center justify-between px-6 shadow-md border-b border-[#23233B]">
-      <div class="flex items-center gap-3">
+      class="w-full h-20 bg-[#2d2e2a] flex items-center justify-between px-8 shadow-lg border-t-4 border-b-4 border-[#fd971f] py-4 md:py-6 mt-0 mb-0 z-20 relative"
+      style="box-shadow: 0 4px 18px 0 #1e1f1c80;">
+      <div class="flex items-center gap-4">
         <img src="/src/assets/payload_iq_mascot.png" alt="PayloadIQ Mascot"
-          style="height: 4.5rem; width: 4.5rem; object-fit: contain;" />
-        <span class="text-white text-xl font-semibold tracking-wide">PayloadIQ</span>
+          style="height: 5.2rem; width: 5.2rem; object-fit: contain; filter: drop-shadow(0 0 12px #fd971f) brightness(1.15);" />
+        <span class="text-white text-2xl font-extrabold tracking-wide select-none">
+          Payload<span class="text-[#fd971f]">IQ</span>
+        </span>
       </div>
       <div class="flex items-center gap-4">
         <button class="text-gray-300 hover:text-white transition-colors rounded-lg p-2 shadow">
@@ -53,45 +92,62 @@ function toggleSidebar() {
     <div class="flex flex-1 min-h-0">
       <!-- Collapsible/Resizable Sidebar -->
       <aside v-if="sidebarOpen"
-        class="bg-gray-800/70 backdrop-blur-xl border-r border-cyan-400 min-h-full flex flex-col gap-6 items-start shadow-2xl transition-all duration-200"
-        style="width: 14rem; min-width: 120px; max-width: 220px; overflow: auto;">
+        class="bg-[#1e1f1c]/80 backdrop-blur-xl border-r-8 border-[#fd971f] min-h-full flex flex-col gap-6 items-start shadow-2xl transition-all duration-300 ease-in-out"
+        :style="`width: ${sidebarWidth}px; min-width: ${minSidebarWidth}px; max-width: ${maxSidebarWidth}px; overflow: auto;`">
         <nav class="w-full flex-1">
           <ul class="space-y-3 mt-6">
             <li
-              class="flex items-center gap-3 text-[#E0E0E0] hover:text-cyan-400 transition-colors duration-150 cursor-pointer text-base font-semibold py-2 px-3 rounded-lg hover:bg-gray-800/60 border-l-4 border-transparent hover:border-cyan-400">
-              <HomeIcon class="h-5 w-5" /> <span>Requests</span>
+              class="flex items-center gap-3 text-[#f8f8f2] hover:text-[#a6e22e] transition-colors duration-150 cursor-pointer text-base font-semibold py-2 px-3 rounded-lg hover:bg-[#49483e]/60 border-l-4 border-transparent hover:border-[#a6e22e]">
+              <HomeIcon class="h-5 w-5" /> <span class="!shadow-none !text-shadow-none">Requests</span>
             </li>
             <li
-              class="flex items-center gap-3 text-[#E0E0E0] hover:text-purple-400 transition-colors duration-150 cursor-pointer text-base font-semibold py-2 px-3 rounded-lg hover:bg-gray-800/60 border-l-4 border-transparent hover:border-purple-400">
+              class="flex items-center gap-3 text-[#f8f8f2] hover:text-[#fd971f] transition-colors duration-150 cursor-pointer text-base font-semibold py-2 px-3 rounded-lg hover:bg-[#49483e]/60 border-l-4 border-transparent hover:border-[#fd971f]">
               <FolderIcon class="h-5 w-5" /> <span>Collections</span>
             </li>
             <li
-              class="flex items-center gap-3 text-[#E0E0E0] hover:text-green-400 transition-colors duration-150 cursor-pointer text-base font-semibold py-2 px-3 rounded-lg hover:bg-gray-800/60 border-l-4 border-transparent hover:border-green-400">
+              class="flex items-center gap-3 text-[#f8f8f2] hover:text-[#66d9ef] transition-colors duration-150 cursor-pointer text-base font-semibold py-2 px-3 rounded-lg hover:bg-[#49483e]/60 border-l-4 border-transparent hover:border-[#66d9ef]">
               <Cog6ToothIcon class="h-5 w-5" /> <span>Environments</span>
             </li>
           </ul>
         </nav>
         <div class="w-full">
-          <span class="text-xs text-cyan-400 font-bold uppercase tracking-wide pl-2 mb-2 block">History</span>
+          <span class="text-xs text-[#a6e22e] font-bold uppercase tracking-wide pl-2 mb-2 block">History</span>
           <ul class="space-y-2 px-2 pb-2">
             <li v-for="item in historyItems" :key="item.id"
-              class="flex items-center gap-2 bg-gray-800/70 hover:bg-gray-800/90 rounded-lg px-3 py-2 transition-colors duration-150 cursor-pointer border-l-4 border-transparent hover:border-cyan-400">
-              <span class="text-xs font-bold px-2 py-1 rounded bg-[#18181B] text-cyan-400">{{ item.method }}</span>
-              <span class="text-gray-200 truncate flex-1">{{ item.endpoint }}</span>
-              <span class="text-cyan-300 text-xs">{{ item.time }}</span>
+              class="flex items-center gap-2 bg-[#49483e]/70 hover:bg-[#49483e]/90 rounded-lg px-3 py-2 transition-colors duration-150 cursor-pointer border-l-4 border-transparent hover:border-[#a6e22e]">
+              <span class="text-xs font-bold px-2 py-1 rounded bg-[#272822] text-[#a6e22e]">{{ item.method }}</span>
+              <span class="text-[#f8f8f2] truncate flex-1">{{ item.endpoint }}</span>
+              <span class="text-[#fd971f] text-xs">{{ item.time }}</span>
             </li>
           </ul>
         </div>
+        <!-- Sidebar resize handle and collapse button -->
+        <div class="absolute top-0 right-0 h-full w-8 flex items-center justify-end z-40">
+          <div class="h-full w-4 cursor-col-resize bg-transparent hover:bg-[#fd971f]/30 transition-colors duration-200"
+            @mousedown="startResize"></div>
+          <div
+            class="h-full w-4 flex items-center justify-center cursor-pointer bg-[#fd971f]/10 hover:bg-[#fd971f]/30 transition-colors duration-200"
+            @click="toggleSidebar">
+            <span
+              class="text-[#fd971f] text-lg font-bold opacity-70 hover:opacity-100 transition-opacity duration-200 select-none">⏴</span>
+          </div>
+        </div>
       </aside>
-      <button @click="toggleSidebar"
-        class="absolute left-2 top-16 z-10 bg-[#23233B] text-[#00FFD0] rounded-full p-2 shadow hover:bg-[#2A2A3B] transition-all duration-200">
-        <span v-if="sidebarOpen">⏴</span>
-        <span v-else>⏵</span>
-      </button>
+      <!-- Always-visible clickable sidebar border for toggle -->
+      <div v-if="!sidebarOpen"
+        class="fixed top-0 left-0 h-full w-8 pr-2 flex items-center justify-center cursor-pointer z-50 bg-[#fd971f]/10 hover:bg-[#fd971f]/30 transition-colors duration-200"
+        @click="toggleSidebar">
+        <span
+          class="text-[#fd971f] text-lg font-bold opacity-70 hover:opacity-100 transition-opacity duration-200 select-none">⏵</span>
+      </div>
 
       <!-- Main Content -->
-      <main class="flex-1 flex flex-col bg-[#1E1E2F] min-h-0 overflow-hidden pb-8 md:pb-12 pr-4 md:pr-8 pl-4 md:pl-8">
-        <MainView />
+      <main
+        class="flex-1 flex flex-col bg-[#1a1a19] min-h-0 overflow-hidden pb-8 md:pb-12 pr-4 md:pr-8 pl-4 md:pl-8 border-l border-[#75715e] shadow-inner">
+        <!-- Add a wrapper for MainView to increase contrast and add depth -->
+        <div class="rounded-xl bg-[#23241f] border border-[#f8f8f2] p-2 md:p-4 transition-colors duration-200">
+          <MainView />
+        </div>
         <div class="w-full h-8 md:h-12"></div>
       </main>
     </div>
