@@ -46,7 +46,7 @@
         </section>
         <!-- History Pane -->
         <section
-            class="bg-[#272822] rounded-xl shadow-2xl border border-[#fd971f] h-full min-h-[40vh] overflow-y-auto transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-4"
+            class="bg-[#272822] rounded-xl shadow-2xl border border-[#fd971f] h-full min-h-[40vh] overflow-y-auto transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-6"
             aria-labelledby="history-pane-header">
             <div class="flex items-center justify-between px-6 pt-6 pb-4">
                 <h2 id="history-pane-header" class="text-lg md:text-xl font-bold text-[#fd971f]">History</h2>
@@ -54,7 +54,7 @@
             <div v-if="!collapsed.history" class="flex-1 flex flex-col min-h-0 px-6 pb-6 overflow-auto">
                 <ul class="space-y-2 overflow-x-auto">
                     <li v-for="item in store.history" :key="item.id"
-                        class="flex items-center gap-2 bg-[#49483e]/70 hover:bg-[#49483e]/90 rounded-lg px-3 py-2 transition-colors duration-150 cursor-pointer border-l-4 border-transparent hover:border-[#a6e22e] max-w-full"
+                        class="flex items-center gap-2 bg-[#49483e]/70 hover:bg-[#49483e]/90 rounded-lg px-3 py-2 transition-colors duration-150 cursor-pointer border-l-4 border-transparent hover:border-[#a6e22e] w-full flex-grow"
                         tabindex="0" role="button"
                         aria-label="History item: {{ item.method }} {{ item.endpoint }} at {{ item.time }}"
                         @keydown.enter="selectHistory(item)" @keydown.space.prevent="selectHistory(item)"
@@ -69,21 +69,35 @@
                             item.responseTime }}ms</span>
                         <span v-if="item.size !== undefined" class="text-pink-400 text-xs font-mono">{{ item.size
                             }}B</span>
+                        <span class="text-gray-500 text-[10px] font-mono ml-2 select-all" title="UUID">{{ item.id
+                            }}</span>
                     </li>
                 </ul>
             </div>
         </section>
         <!-- Curl Pane -->
         <section
-            class="bg-[#272822] rounded-xl shadow-2xl border border-[#66d9ef] h-full min-h-[40vh] overflow-y-auto transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-4"
+            class="bg-[#272822] rounded-xl shadow-2xl border border-[#66d9ef] h-full min-h-[40vh] overflow-y-auto transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-6"
             aria-labelledby="curl-pane-header">
             <div class="flex items-center justify-between px-6 pt-6 pb-4">
                 <h2 id="curl-pane-header" class="text-lg md:text-xl font-bold text-[#66d9ef]">cURL</h2>
             </div>
             <div class="flex-1 flex flex-col min-h-0 px-6 pb-6 overflow-auto">
-                <pre class="bg-[#272822] text-[#f8f8f2] p-4 rounded-lg text-xs font-mono whitespace-pre-wrap break-all border border-[#66d9ef] shadow-inner"
-                    tabindex="0" aria-label="cURL command output">
-            {{ curlCommand }}</pre>
+                <ul class="divide-y divide-[#31343a]">
+                    <li v-for="(cmd, idx) in curlHistory.slice(0, 10)" :key="idx"
+                        class="flex items-center group px-0 py-0 min-h-[2.5rem]">
+                        <span class="text-[#66d9ef] font-mono text-xs px-2 select-none">#{{ curlHistory.length - idx
+                        }}</span>
+                        <code
+                            class="flex-1 text-[#f8f8f2] text-xs font-mono overflow-x-auto whitespace-nowrap truncate bg-transparent px-0 py-0"
+                            tabindex="0" :title="cmd">{{ cmd }}</code>
+                        <button
+                            class="ml-2 px-2 py-1 rounded border border-[#66d9ef] text-[#66d9ef] bg-[#23272e] hover:bg-[#66d9ef] hover:text-[#23272e] focus:bg-[#66d9ef] focus:text-[#23272e] text-xs font-mono transition-colors duration-150"
+                            @click="copyCurl(cmd)" tabindex="0" aria-label="Copy cURL command {{ idx + 1 }}">
+                            Copy
+                        </button>
+                    </li>
+                </ul>
             </div>
         </section>
     </div>
@@ -101,6 +115,7 @@ import { saveRequest } from '../utils/storage';
 // Collapsed state for panes
 const collapsed = ref({ request: false, response: false, history: false, curl: false });
 const curlCommand = ref('');
+const curlHistory = ref([]); // Array of previous cURL commands
 
 // Pinia store
 const store = useMainStore();
@@ -133,13 +148,22 @@ async function sendRequest(request) {
             size: res.size
         });
         // Generate cURL command
-        curlCommand.value = generateCurlCommand(request);
+        const generated = generateCurlCommand(request);
+        curlCommand.value = generated;
+        curlHistory.value.unshift(generated);
+        // Limit history to 20 entries
+        if (curlHistory.value.length > 20) curlHistory.value.length = 20;
     } catch (e) {
         store.setError(e?.message || 'Request failed.');
         curlCommand.value = '';
     } finally {
         store.setLoading(false);
     }
+}
+
+// Copy cURL command to clipboard
+function copyCurl(cmd) {
+    navigator.clipboard?.writeText(cmd);
 }
 
 // Allow history selection via keyboard or click
