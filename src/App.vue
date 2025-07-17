@@ -96,46 +96,50 @@ window.addEventListener('mouseup', stopResize);
         :style="`width: ${sidebarWidth}px; min-width: ${minSidebarWidth}px; max-width: ${maxSidebarWidth}px; overflow: auto;`">
         <nav class="w-full flex-1">
           <ul class="space-y-3 mt-6">
+            <div v-if="!sidebarOpen"
+              class="fixed top-0 left-0 h-full w-8 pr-2 flex items-center justify-center cursor-pointer z-50 bg-[#fd971f]/10 hover:bg-[#fd971f]/30 transition-colors duration-200"
+              @click="toggleSidebar">
+              <span
+                class="text-[#fd971f] text-lg font-bold opacity-70 hover:opacity-100 transition-opacity duration-200 select-none">⏵</span>
+            </div>
             <li
-              class="flex items-center gap-3 text-[#f8f8f2] hover:text-[#a6e22e] transition-colors duration-150 cursor-pointer text-base font-semibold py-2 px-3 rounded-lg hover:bg-[#49483e]/60 border-l-4 border-transparent hover:border-[#a6e22e]">
-              <HomeIcon class="h-5 w-5" /> <span class="!shadow-none !text-shadow-none">Requests</span>
+              class="flex items-center gap-3 text-[#f8f8f2] hover:text-[#66d9ef] transition-colors duration-150 cursor-pointer text-base font-semibold py-2 px-3 rounded-lg hover:bg-[#49483e]/60 border-l-4 border-transparent hover:border-[#66d9ef]">
+              <Cog6ToothIcon class="h-5 w-5" /> <span>Environments</span>
             </li>
             <li
               class="flex items-center gap-3 text-[#f8f8f2] hover:text-[#fd971f] transition-colors duration-150 cursor-pointer text-base font-semibold py-2 px-3 rounded-lg hover:bg-[#49483e]/60 border-l-4 border-transparent hover:border-[#fd971f]">
               <FolderIcon class="h-5 w-5" /> <span>Collections</span>
             </li>
             <li
-              class="flex items-center gap-3 text-[#f8f8f2] hover:text-[#66d9ef] transition-colors duration-150 cursor-pointer text-base font-semibold py-2 px-3 rounded-lg hover:bg-[#49483e]/60 border-l-4 border-transparent hover:border-[#66d9ef]">
-              <Cog6ToothIcon class="h-5 w-5" /> <span>Environments</span>
+              class="flex items-center gap-3 text-[#f8f8f2] hover:text-[#a6e22e] transition-colors duration-150 cursor-pointer text-base font-semibold py-2 px-3 rounded-lg hover:bg-[#49483e]/60 border-l-4 border-transparent hover:border-[#a6e22e]">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 4v16h16V4H4zm4 4h8v8H8V8z" />
+              </svg> <span>Import/Export</span>
+            </li>
+            <li
+              class="flex items-center gap-3 text-[#f8f8f2] hover:text-[#fd971f] transition-colors duration-150 cursor-pointer text-base font-semibold py-2 px-3 rounded-lg hover:bg-[#49483e]/60 border-l-4 border-transparent hover:border-[#fd971f]">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 7v4a1 1 0 001 1h3v4a1 1 0 001 1h8a1 1 0 001-1v-4h3a1 1 0 001-1V7a1 1 0 00-1-1H4a1 1 0 00-1 1z" />
+              </svg> <span>History</span>
             </li>
           </ul>
         </nav>
-        <div class="w-full">
-          <span class="text-xs text-[#a6e22e] font-bold uppercase tracking-wide pl-2 mb-2 block">History</span>
-          <ul class="space-y-2 px-2 pb-2">
-            <li v-for="item in historyItems" :key="item.id"
-              class="flex items-center gap-2 bg-[#49483e]/70 hover:bg-[#49483e]/90 rounded-lg px-3 py-2 transition-colors duration-150 cursor-pointer border-l-4 border-transparent hover:border-[#a6e22e]">
-              <span class="text-xs font-bold px-2 py-1 rounded bg-[#272822] text-[#a6e22e]">{{ item.method }}</span>
-              <span class="text-[#f8f8f2] truncate flex-1">{{ item.endpoint }}</span>
-              <span class="text-[#fd971f] text-xs">{{ item.time }}</span>
-            </li>
-          </ul>
-        </div>
-        <!-- Sidebar resize handle and collapse button -->
-        <div class="absolute top-0 right-0 h-full w-8 flex items-center justify-end z-40">
-          <div class="h-full w-4 cursor-col-resize bg-transparent hover:bg-[#fd971f]/30 transition-colors duration-200"
-            @mousedown="startResize"></div>
-          <div
-            class="h-full w-4 flex items-center justify-center cursor-pointer bg-[#fd971f]/10 hover:bg-[#fd971f]/30 transition-colors duration-200"
-            @click="toggleSidebar">
-            <span
-              class="text-[#fd971f] text-lg font-bold opacity-70 hover:opacity-100 transition-opacity duration-200 select-none">⏴</span>
-          </div>
+        <!-- History list removed from sidebar -->
+        <!-- Combined sidebar resize/toggle bar on right edge -->
+        <div v-if="sidebarOpen"
+          class="absolute top-0 right-0 h-full w-6 flex items-center justify-center cursor-col-resize z-50 bg-[#fd971f]/10 hover:bg-[#fd971f]/30 transition-colors duration-200"
+          @mousedown="startResize" @click="toggleSidebar">
+          <span
+            class="text-[#fd971f] text-lg font-bold opacity-70 hover:opacity-100 transition-opacity duration-200 select-none">⏴</span>
         </div>
       </aside>
-      <!-- Always-visible clickable sidebar border for toggle -->
+      <!-- Always-visible sidebar toggle when collapsed -->
       <div v-if="!sidebarOpen"
-        class="fixed top-0 left-0 h-full w-8 pr-2 flex items-center justify-center cursor-pointer z-50 bg-[#fd971f]/10 hover:bg-[#fd971f]/30 transition-colors duration-200"
+        class="fixed top-0 left-0 h-full w-6 flex items-center justify-center cursor-pointer z-50 bg-[#fd971f]/10 hover:bg-[#fd971f]/30 transition-colors duration-200"
         @click="toggleSidebar">
         <span
           class="text-[#fd971f] text-lg font-bold opacity-70 hover:opacity-100 transition-opacity duration-200 select-none">⏵</span>
