@@ -1,16 +1,31 @@
 <template>
-    <main class="flex flex-col md:flex-row gap-4 md:gap-8 h-full min-h-0 w-full px-2 md:px-0">
+    <div class="h-full min-h-0 w-full min-w-0 px-2 md:px-0 grid gap-4 overflow-x-auto"
+        style="grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); grid-auto-flow: row; background-color: #1b1b1b;">
+        <!-- Request Pane -->
         <section
-            class="flex-1 flex flex-col bg-[#272822] rounded-xl shadow-2xl p-6 border border-[#f92672] min-h-0 h-full justify-start transition-all duration-300 ease-in-out mb-4 md:mb-0 backdrop-blur-xl">
-            <h2 class="text-lg md:text-xl font-bold text-cyan-400 mb-4">Request</h2>
-            <div class="flex-1 flex flex-col min-h-0">
+            class="bg-[#181818] rounded-xl shadow-md ring-1 ring-orange-500/20 border border-orange-500/60 h-full transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-2">
+            <div class="flex items-center justify-between px-6 pt-6 pb-4">
+                <h2 class="text-xl font-semibold text-orange-400 tracking-wider">Request</h2>
+                <button @click="collapsed.request = !collapsed.request"
+                    class="text-xs px-2 py-1 rounded bg-orange-600 text-white hover:bg-orange-500 hover:text-black transition-colors">
+                    {{ collapsed.request ? '▼' : '▲' }}
+                </button>
+            </div>
+            <div v-if="!collapsed.request" class="flex-1 flex flex-col min-h-0 px-6 pb-6">
                 <RequestComposer :initialRequest="currentRequest" @send="sendRequest" />
             </div>
         </section>
+        <!-- Response Pane -->
         <section
-            class="flex-1 flex flex-col bg-[#272822] rounded-xl shadow-2xl p-6 border border-[#a6e22e] min-h-0 h-full justify-start overflow-auto transition-all duration-300 ease-in-out backdrop-blur-xl">
-            <h2 class="text-lg md:text-xl font-bold text-purple-400 mb-4 drop-shadow-[0_0_8px_purple]">Response</h2>
-            <div class="flex-1 flex flex-col min-h-0 overflow-auto">
+            class="bg-[#181818] rounded-xl shadow-md ring-1 ring-orange-500/20 border border-green-500/60 h-full transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-2">
+            <div class="flex items-center justify-between px-6 pt-6 pb-4">
+                <h2 class="text-xl font-semibold text-green-400 tracking-wider">Response</h2>
+                <button @click="collapsed.response = !collapsed.response"
+                    class="text-xs px-2 py-1 rounded bg-green-600 text-white hover:bg-green-500 hover:text-black transition-colors">
+                    {{ collapsed.response ? '▼' : '▲' }}
+                </button>
+            </div>
+            <div v-if="!collapsed.response" class="flex-1 flex flex-col min-h-0 px-6 pb-6 overflow-auto">
                 <template v-if="loading">
                     <div class="text-center text-cyan-400 py-8 animate-pulse">Loading...</div>
                 </template>
@@ -22,16 +37,42 @@
                 </template>
             </div>
         </section>
-    </main>
+        <!-- History Pane -->
+        <section
+            class="bg-[#181818] rounded-xl shadow-md ring-1 ring-orange-500/20 border border-orange-500/60 h-full transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full">
+            <div class="flex items-center justify-between px-6 pt-6 pb-4">
+                <h2 class="text-xl font-semibold text-orange-400 tracking-wider">History</h2>
+                <button @click="collapsed.history = !collapsed.history"
+                    class="text-xs px-2 py-1 rounded bg-orange-600 text-white hover:bg-orange-500 hover:text-black transition-colors">
+                    {{ collapsed.history ? '▼' : '▲' }}
+                </button>
+            </div>
+            <div v-if="!collapsed.history" class="flex-1 flex flex-col min-h-0 px-6 pb-6 overflow-auto">
+                <ul class="space-y-2">
+                    <li v-for="item in store.history" :key="item.id"
+                        class="flex items-center gap-2 bg-[#49483e]/70 hover:bg-[#49483e]/90 rounded-lg px-3 py-2 transition-colors duration-150 cursor-pointer border-l-4 border-transparent hover:border-[#a6e22e]">
+                        <span class="text-xs font-bold px-2 py-1 rounded bg-[#272822] text-[#a6e22e]">{{ item.method
+                        }}</span>
+                        <span class="text-[#f8f8f2] truncate flex-1">{{ item.endpoint }}</span>
+                        <span class="text-[#fd971f] text-xs">{{ item.time }}</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </div>
 </template>
 
 <script setup>
+import { ref } from 'vue';
+// Track collapsed state for each pane
+const collapsed = ref({ request: false, response: false, history: false });
 import { computed } from 'vue';
 import { useMainStore } from '../store';
 import RequestComposer from '../components/RequestComposer.vue';
 import ResponseViewer from '../components/ResponseViewer.vue';
 import { sendHttpRequest } from '../utils/api';
 import { saveRequest } from '../utils/storage';
+// Register Splitpanes and Pane for template usage
 
 
 

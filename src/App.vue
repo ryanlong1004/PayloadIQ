@@ -89,10 +89,10 @@ window.addEventListener('mouseup', stopResize);
     </header>
 
     <!-- Main Layout -->
-    <div class="flex flex-1 min-h-0">
+    <div class="flex flex-1 min-h-0 min-w-0">
       <!-- Collapsible/Resizable Sidebar -->
       <aside v-if="sidebarOpen"
-        class="bg-[#1e1f1c]/80 backdrop-blur-xl border-r-8 border-[#fd971f] min-h-full flex flex-col gap-6 items-start shadow-2xl transition-all duration-300 ease-in-out"
+        class="bg-[#1e1f1c]/80 backdrop-blur-xl border-r-8 border-[#fd971f] min-h-full flex flex-col gap-6 items-start shadow-2xl transition-all duration-300 ease-in-out pr-[2em]"
         :style="`width: ${sidebarWidth}px; min-width: ${minSidebarWidth}px; max-width: ${maxSidebarWidth}px; overflow: auto;`">
         <nav class="w-full flex-1">
           <ul class="space-y-3 mt-6">
@@ -110,24 +110,12 @@ window.addEventListener('mouseup', stopResize);
             </li>
           </ul>
         </nav>
-        <div class="w-full">
-          <span class="text-xs text-[#a6e22e] font-bold uppercase tracking-wide pl-2 mb-2 block">History</span>
-          <ul class="space-y-2 px-2 pb-2">
-            <li v-for="item in historyItems" :key="item.id"
-              class="flex items-center gap-2 bg-[#49483e]/70 hover:bg-[#49483e]/90 rounded-lg px-3 py-2 transition-colors duration-150 cursor-pointer border-l-4 border-transparent hover:border-[#a6e22e]">
-              <span class="text-xs font-bold px-2 py-1 rounded bg-[#272822] text-[#a6e22e]">{{ item.method }}</span>
-              <span class="text-[#f8f8f2] truncate flex-1">{{ item.endpoint }}</span>
-              <span class="text-[#fd971f] text-xs">{{ item.time }}</span>
-            </li>
-          </ul>
-        </div>
+        <!-- History removed from sidebar; will be placed in its own pane -->
         <!-- Sidebar resize handle and collapse button -->
         <div class="absolute top-0 right-0 h-full w-8 flex items-center justify-end z-40">
-          <div class="h-full w-4 cursor-col-resize bg-transparent hover:bg-[#fd971f]/30 transition-colors duration-200"
-            @mousedown="startResize"></div>
           <div
-            class="h-full w-4 flex items-center justify-center cursor-pointer bg-[#fd971f]/10 hover:bg-[#fd971f]/30 transition-colors duration-200"
-            @click="toggleSidebar">
+            class="h-full w-8 flex items-center justify-center cursor-col-resize bg-[#fd971f]/10 hover:bg-[#fd971f]/30 transition-colors duration-200"
+            @mousedown="startResize" @click="toggleSidebar">
             <span
               class="text-[#fd971f] text-lg font-bold opacity-70 hover:opacity-100 transition-opacity duration-200 select-none">⏴</span>
           </div>
@@ -143,11 +131,8 @@ window.addEventListener('mouseup', stopResize);
 
       <!-- Main Content -->
       <main
-        class="flex-1 flex flex-col bg-[#1a1a19] min-h-0 overflow-hidden pb-8 md:pb-12 pr-4 md:pr-8 pl-4 md:pl-8 border-l border-[#75715e] shadow-inner">
-        <!-- Add a wrapper for MainView to increase contrast and add depth -->
-        <div class="rounded-xl bg-[#23241f] border border-[#f8f8f2] p-2 md:p-4 transition-colors duration-200">
-          <MainView />
-        </div>
+        class="flex-1 flex flex-col bg-[#1a1a19] min-h-0 overflow-x-auto pt-4 md:pt-8 pb-8 md:pb-12 pr-4 md:pr-8 pl-4 md:pl-8 border-l border-[#75715e] shadow-inner min-w-0">
+        <MainView />
         <div class="w-full h-8 md:h-12"></div>
       </main>
     </div>
