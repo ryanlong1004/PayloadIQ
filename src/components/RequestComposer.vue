@@ -1,9 +1,9 @@
 <template>
     <form @submit.prevent="onSend"
-        class="bg-[#23272A] p-4 md:p-6 rounded-2xl shadow-xl w-full max-w-xl mx-auto space-y-6 transition-colors duration-200 animate-fade-in font-inter">
+        class="bg-gray-800/70 backdrop-blur-xl rounded-xl shadow-2xl border border-cyan-400 w-full max-w-xl mx-auto space-y-6 transition-all duration-200 animate-fade-in font-inter">
         <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
             <select v-model="localRequest.method"
-                class="bg-[#2C2C2C] border border-zinc-700 text-white text-base rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 transition-all duration-200 font-semibold">
+                class="bg-gray-900/80 border border-cyan-400 text-cyan-300 text-base rounded-xl px-3 py-2 focus:ring-2 focus:ring-cyan-500 transition-all duration-200 font-semibold shadow-md">
                 <option>GET</option>
                 <option>POST</option>
                 <option>PUT</option>
@@ -11,27 +11,29 @@
                 <option>PATCH</option>
             </select>
             <input v-model="localRequest.url" type="text" placeholder="Enter URL"
-                class="flex-1 bg-[#2C2C2C] border border-zinc-700 text-white px-4 py-2 rounded text-base focus:ring-2 focus:ring-blue-500 transition-all duration-200 font-normal" />
+                class="flex-1 bg-gray-900/80 border border-cyan-400 text-green-400 px-4 py-2 rounded-xl text-base focus:ring-2 focus:ring-cyan-500 transition-all duration-200 font-mono shadow-md" />
             <button type="submit"
-                class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-5 py-2 rounded-lg text-base font-bold shadow transition-transform duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Send
+                class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white px-5 py-2 rounded-xl text-base font-bold shadow-xl transition-transform duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 drop-shadow-[0_0_8px_cyan]">Send
                 Request</button>
         </div>
         <div>
-            <label for="headers-input" class="block text-gray-300 text-base font-semibold mb-2">Headers
-                <span class="text-xs text-gray-400 ml-2" title="Add custom headers as JSON">(e.g., {'Content-Type':
+            <label for="headers-input"
+                class="block text-cyan-400 text-base font-semibold mb-2 drop-shadow-[0_0_8px_cyan]">Headers
+                <span class="text-xs text-cyan-300 ml-2" title="Add custom headers as JSON">(e.g., {'Content-Type':
                     'application/json'})</span>
             </label>
             <textarea id="headers-input" v-model="localRequest.headers"
-                class="w-full bg-[#2C2C2C] text-base text-gray-200 font-mono border border-zinc-700 rounded-lg p-3 h-20 focus:ring-2 focus:ring-blue-500 transition-all duration-200 resize-y"
+                class="w-full bg-gray-900/80 text-base text-green-400 font-mono border border-cyan-400 rounded-xl p-3 h-20 focus:ring-2 focus:ring-cyan-500 transition-all duration-200 resize-y shadow-md"
                 placeholder='{ "Content-Type": "application/json" }' aria-label="Request headers"></textarea>
         </div>
         <div>
-            <label for="body-input" class="block text-gray-300 text-base font-semibold mb-2">Body
-                <span class="text-xs text-gray-400 ml-2" title="Enter JSON body for POST/PUT requests">(JSON
+            <label for="body-input"
+                class="block text-purple-400 text-base font-semibold mb-2 drop-shadow-[0_0_8px_purple]">Body
+                <span class="text-xs text-purple-300 ml-2" title="Enter JSON body for POST/PUT requests">(JSON
                     only)</span>
             </label>
             <textarea id="body-input" v-model="localRequest.body"
-                class="w-full bg-[#2C2C2C] text-base text-gray-200 font-mono border border-zinc-700 rounded-lg p-3 h-32 focus:ring-2 focus:ring-blue-500 transition-all duration-200 resize-y"
+                class="w-full bg-gray-900/80 text-base text-purple-300 font-mono border border-purple-400 rounded-xl p-3 h-32 focus:ring-2 focus:ring-purple-500 transition-all duration-200 resize-y shadow-md"
                 placeholder="JSON body" aria-label="Request body"></textarea>
         </div>
     </form>
