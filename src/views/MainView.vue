@@ -3,9 +3,10 @@
         style="grid-template-columns: repeat(12, 1fr); grid-template-rows: minmax(45vh, 45vh) minmax(45vh, 45vh) minmax(20vh, 1fr) minmax(20vh, 1fr); background-color: #1b1b1b;">
         <!-- Request Pane -->
         <section
-            class="bg-[#272822] rounded-xl shadow-2xl border border-[#f92672] h-full min-h-[40vh] transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-6">
+            class="bg-[#272822] rounded-xl shadow-2xl border border-[#f92672] h-full min-h-[40vh] transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-6"
+            aria-labelledby="request-pane-header">
             <div class="flex items-center justify-between px-6 pt-6 pb-4">
-                <h2 class="text-lg md:text-xl font-bold text-cyan-400">Request</h2>
+                <h2 id="request-pane-header" class="text-lg md:text-xl font-bold text-cyan-400">Request</h2>
             </div>
             <div v-if="!collapsed.request" class="flex-1 flex flex-col min-h-0 px-6 pb-6 overflow-auto">
                 <RequestComposer :initialRequest="currentRequest" @send="sendRequest" />
@@ -13,9 +14,11 @@
         </section>
         <!-- Response Pane -->
         <section
-            class="bg-[#272822] rounded-xl shadow-2xl border border-[#a6e22e] h-full min-h-[40vh] transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-6">
+            class="bg-[#272822] rounded-xl shadow-2xl border border-[#a6e22e] h-full min-h-[40vh] transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-6"
+            aria-labelledby="response-pane-header">
             <div class="flex items-center justify-between px-6 pt-6 pb-4">
-                <h2 class="text-lg md:text-xl font-bold text-purple-400 drop-shadow-[0_0_8px_purple]">Response</h2>
+                <h2 id="response-pane-header"
+                    class="text-lg md:text-xl font-bold text-purple-400 drop-shadow-[0_0_8px_purple]">Response</h2>
             </div>
             <!-- Persistent Response Info Bar -->
             <div class="flex gap-2 items-center px-6 pb-2">
@@ -43,37 +46,43 @@
         </section>
         <!-- History Pane -->
         <section
-            class="bg-[#272822] rounded-xl shadow-2xl border border-[#fd971f] h-full min-h-[40vh] overflow-y-auto transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-4">
+            class="bg-[#272822] rounded-xl shadow-2xl border border-[#fd971f] h-full min-h-[40vh] overflow-y-auto transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-4"
+            aria-labelledby="history-pane-header">
             <div class="flex items-center justify-between px-6 pt-6 pb-4">
-                <h2 class="text-lg md:text-xl font-bold text-[#fd971f]">History</h2>
+                <h2 id="history-pane-header" class="text-lg md:text-xl font-bold text-[#fd971f]">History</h2>
             </div>
             <div v-if="!collapsed.history" class="flex-1 flex flex-col min-h-0 px-6 pb-6 overflow-auto">
                 <ul class="space-y-2 overflow-x-auto">
                     <li v-for="item in store.history" :key="item.id"
-                        class="flex items-center gap-2 bg-[#49483e]/70 hover:bg-[#49483e]/90 rounded-lg px-3 py-2 transition-colors duration-150 cursor-pointer border-l-4 border-transparent hover:border-[#a6e22e] max-w-full">
+                        class="flex items-center gap-2 bg-[#49483e]/70 hover:bg-[#49483e]/90 rounded-lg px-3 py-2 transition-colors duration-150 cursor-pointer border-l-4 border-transparent hover:border-[#a6e22e] max-w-full"
+                        tabindex="0" role="button"
+                        aria-label="History item: {{ item.method }} {{ item.endpoint }} at {{ item.time }}"
+                        @keydown.enter="selectHistory(item)" @keydown.space.prevent="selectHistory(item)"
+                        @click="selectHistory(item)">
                         <span class="text-xs font-bold px-2 py-1 rounded bg-[#272822] text-[#a6e22e]">{{ item.method
-                        }}</span>
+                            }}</span>
                         <span class="text-[#f8f8f2] truncate flex-1 min-w-0">{{ item.endpoint }}</span>
                         <span class="text-[#fd971f] text-xs">{{ item.time }}</span>
                         <span v-if="item.status !== undefined" class="text-green-400 text-xs font-mono">{{ item.status
-                        }}</span>
+                            }}</span>
                         <span v-if="item.responseTime !== undefined" class="text-blue-400 text-xs font-mono">{{
                             item.responseTime }}ms</span>
                         <span v-if="item.size !== undefined" class="text-pink-400 text-xs font-mono">{{ item.size
-                        }}B</span>
+                            }}B</span>
                     </li>
                 </ul>
             </div>
         </section>
         <!-- Curl Pane -->
         <section
-            class="bg-[#272822] rounded-xl shadow-2xl border border-[#66d9ef] h-full min-h-[40vh] overflow-y-auto transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-4">
+            class="bg-[#272822] rounded-xl shadow-2xl border border-[#66d9ef] h-full min-h-[40vh] overflow-y-auto transition-all duration-300 ease-in-out backdrop-blur-xl p-0 flex flex-col max-w-full col-span-4"
+            aria-labelledby="curl-pane-header">
             <div class="flex items-center justify-between px-6 pt-6 pb-4">
-                <h2 class="text-lg md:text-xl font-bold text-[#66d9ef]">cURL</h2>
+                <h2 id="curl-pane-header" class="text-lg md:text-xl font-bold text-[#66d9ef]">cURL</h2>
             </div>
             <div class="flex-1 flex flex-col min-h-0 px-6 pb-6 overflow-auto">
-                <pre
-                    class="bg-[#272822] text-[#f8f8f2] p-4 rounded-lg text-xs font-mono whitespace-pre-wrap break-all border border-[#66d9ef] shadow-inner">
+                <pre class="bg-[#272822] text-[#f8f8f2] p-4 rounded-lg text-xs font-mono whitespace-pre-wrap break-all border border-[#66d9ef] shadow-inner"
+                    tabindex="0" aria-label="cURL command output">
             {{ curlCommand }}</pre>
             </div>
         </section>
@@ -81,21 +90,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import fetchToCurl from 'fetch-to-curl';
-// Track collapsed state for each pane
-const collapsed = ref({ request: false, response: false, history: false, curl: false });
-
-// Curl command state
-const curlCommand = ref('');
-import { computed } from 'vue';
 import { useMainStore } from '../store';
 import RequestComposer from '../components/RequestComposer.vue';
 import ResponseViewer from '../components/ResponseViewer.vue';
 import { sendHttpRequest } from '../utils/api';
 import { saveRequest } from '../utils/storage';
 
-
+// Collapsed state for panes
+const collapsed = ref({ request: false, response: false, history: false, curl: false });
+const curlCommand = ref('');
 
 // Pinia store
 const store = useMainStore();
@@ -104,12 +109,7 @@ const currentRequest = computed(() => store.currentRequest);
 const loading = computed(() => store.loading);
 const error = computed(() => store.error);
 
-// Add custom micro-interaction animation for error
-// UnoCSS: animate-shake (add to unocss.config if not present)
-
-/**
- * Send HTTP request and update response panel using centralized state.
- */
+// Send HTTP request and update response panel using centralized state
 async function sendRequest(request) {
     store.setResponse(null);
     store.setError('');
@@ -127,31 +127,35 @@ async function sendRequest(request) {
             id: Date.now(),
             method: request.method,
             endpoint: request.url,
-            time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            status: res.status,
+            responseTime: res.time,
+            size: res.size
         });
         // Generate cURL command
         curlCommand.value = generateCurlCommand(request);
     } catch (e) {
-        store.setError(e.message || 'Request failed.');
+        store.setError(e?.message || 'Request failed.');
         curlCommand.value = '';
     } finally {
         store.setLoading(false);
     }
 }
 
-/**
- * Generates a cURL command string based on the given HTTP request object.
- * 
- * @param {Object} request - The HTTP request object.
- * @param {string} request.url - The URL of the request.
- * @param {string} request.method - The HTTP method (e.g., 'GET', 'POST').
- * @param {Object|string} [request.headers] - The headers for the request, either as an object or a JSON string.
- * @param {string|undefined} [request.body] - The body of the request, if applicable.
- * @returns {string} - A string representing the cURL command.
- */
+// Allow history selection via keyboard or click
+function selectHistory(item) {
+    // Restore the full request if available
+    const historyRequest = {
+        method: item.method,
+        url: item.endpoint,
+        ...(item.headers && { headers: item.headers }),
+        ...(item.body && { body: item.body })
+    };
+    store.setRequest(historyRequest);
+}
+
+// Generates a cURL command string based on the given HTTP request object
 function generateCurlCommand(request) {
-    // fetch-to-curl expects a fetch/XHR/request object
-    // We'll build a fetch-like object from our request
     const fetchObj = {
         url: request.url,
         method: request.method,
@@ -161,8 +165,7 @@ function generateCurlCommand(request) {
     if (request.headers) {
         try {
             fetchObj.headers = typeof request.headers === 'string' ? JSON.parse(request.headers) : request.headers;
-        } catch (error) {
-            console.error('Failed to parse headers:', error);
+        } catch {
             fetchObj.headers = {};
         }
     }
