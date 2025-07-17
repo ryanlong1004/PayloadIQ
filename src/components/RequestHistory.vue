@@ -2,7 +2,7 @@
     <div class="space-y-3 animate-fade-in">
         <ul>
             <li v-for="item in history" :key="item.id"
-                class="flex justify-between items-center bg-[#18181B] rounded-lg px-4 py-3 mb-2 shadow border border-zinc-800 transition-colors duration-200 hover:bg-[#23272A]">
+                class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center bg-[#18181B] rounded-lg px-3 md:px-4 py-2 md:py-3 mb-2 shadow border border-zinc-800 transition-colors duration-200 hover:bg-[#23272A]">
                 <span class="font-mono text-base text-gray-200 flex items-center gap-2">
                     <svg class="h-4 w-4 text-blue-400" fill="none" stroke="currentColor" stroke-width="2"
                         viewBox="0 0 24 24">
@@ -13,7 +13,7 @@
                         item.url }}</span>
                 </span>
                 <button @click="$emit('load', item)"
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs font-semibold shadow transition-colors duration-200">Load</button>
+                    class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-3 py-1 rounded text-xs font-semibold shadow transition-transform duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 mt-2 sm:mt-0">Load</button>
             </li>
         </ul>
         <div v-if="!history.length" class="text-gray-500 text-base italic flex items-center gap-2 mt-4">
@@ -26,11 +26,9 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
-const props = defineProps({ history: Array });
-const history = ref([]);
+import { computed } from 'vue';
+import { useMainStore } from '../store';
 
-watch(() => props.history, (val) => {
-    history.value = val || [];
-}, { immediate: true });
+const store = useMainStore();
+const history = computed(() => store.history);
 </script>

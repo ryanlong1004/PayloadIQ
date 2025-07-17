@@ -1,6 +1,6 @@
-# Postman Clone
+# PayloadIQ: Postman Clone
 
-A Vue 3 + Tailwind CSS web app to compose and send HTTP requests, view responses, and manage request history.
+A modern Vue 3 + UnoCSS web app to compose and send HTTP requests, view responses, and manage request history. Features responsive design, micro-interactions, and robust state management with Pinia.
 
 ## Features
 
@@ -8,6 +8,11 @@ A Vue 3 + Tailwind CSS web app to compose and send HTTP requests, view responses
 - View formatted responses
 - Save/load request history (localStorage)
 - Modular component structure
+- Responsive design for mobile/tablet/desktop
+- Micro-interactions (button hover, panel transitions)
+- Modern input/button styling
+- Centralized state management with Pinia
+- Lazy-loaded heavy components
 
 ## Getting Started
 
@@ -24,9 +29,10 @@ A Vue 3 + Tailwind CSS web app to compose and send HTTP requests, view responses
 
 - `src/components/` — UI components
 - `src/views/` — Page views
-- `src/store/` — State management
+- `src/store/` — Pinia state management
 - `src/utils/` — Utility functions
 
 ## Next Steps
 
-- Implement collections, environments, authentication helpers, and desktop packaging (Tauri/Electron).
+- Add unit tests for key components and logic
+- Implement collections, environments, authentication helpers, and desktop packaging (Tauri/Electron)

@@ -1,53 +1,71 @@
 <template>
-    <section class="flex flex-col md:flex-row gap-8 h-full min-h-0 w-full">
-        <div
-            class="flex-1 flex flex-col bg-[#23272A] rounded-2xl shadow-xl p-6 border border-zinc-800 min-h-0 h-full justify-start">
-            <h2 class="text-lg font-bold text-white mb-4">Request</h2>
+    <main class="flex flex-col md:flex-row gap-4 md:gap-8 h-full min-h-0 w-full px-2 md:px-0">
+        <section
+            class="flex-1 flex flex-col bg-[#23272A] rounded-2xl shadow-xl p-4 md:p-6 border border-zinc-800 min-h-0 h-full justify-start transition-all duration-300 ease-in-out mb-4 md:mb-0">
+            <h2 class="text-lg md:text-xl font-bold text-white mb-4">Request</h2>
             <div class="flex-1 flex flex-col min-h-0">
-                <RequestComposer :initialRequest="currentRequest" @send="handleSend" />
+                <RequestComposer :initialRequest="currentRequest" @send="sendRequest" />
             </div>
-        </div>
-        <div
-            class="flex-1 flex flex-col bg-[#23272A] rounded-2xl shadow-xl p-6 border border-zinc-800 min-h-0 h-full justify-start overflow-auto">
-            <h2 class="text-lg font-bold text-white mb-4">Response</h2>
+        </section>
+        <section
+            class="flex-1 flex flex-col bg-[#23272A] rounded-2xl shadow-xl p-4 md:p-6 border border-zinc-800 min-h-0 h-full justify-start overflow-auto transition-all duration-300 ease-in-out">
+            <h2 class="text-lg md:text-xl font-bold text-white mb-4">Response</h2>
             <div class="flex-1 flex flex-col min-h-0 overflow-auto">
-                <ResponseViewer :response="response" />
+                <template v-if="loading">
+                    <div class="text-center text-gray-400 py-8 animate-pulse">Loading...</div>
+                </template>
+                <template v-else-if="error">
+                    <div class="text-center text-red-400 py-8 animate-shake">{{ error }}</div>
+                </template>
+                <template v-else>
+                    <ResponseViewer :response="response" />
+                </template>
             </div>
-        </div>
-        <div
-            class="flex-1 flex flex-col bg-[#23272A] rounded-2xl shadow-xl p-6 border border-zinc-800 min-h-0 h-full justify-start">
-            <h2 class="text-lg font-bold text-white mb-4">History</h2>
-            <div class="flex-1 flex flex-col min-h-0">
-                <RequestHistory :history="history" @load="loadRequest" />
-            </div>
-        </div>
-    </section>
+        </section>
+    </main>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { computed } from 'vue';
+import { useMainStore } from '../store';
 import RequestComposer from '../components/RequestComposer.vue';
 import ResponseViewer from '../components/ResponseViewer.vue';
-import RequestHistory from '../components/RequestHistory.vue';
 import { sendHttpRequest } from '../utils/api';
-import { saveRequest, loadHistory } from '../utils/storage';
+import { saveRequest } from '../utils/storage';
 
-const response = ref(null);
-const currentRequest = ref({ url: '', method: 'GET', headers: '', body: '' });
-const history = ref([]);
 
-const handleSend = async (request) => {
-    response.value = null;
-    const res = await sendHttpRequest(request);
-    response.value = res;
-    saveRequest(request);
-    history.value = loadHistory();
-};
 
-const loadRequest = (item) => {
-    currentRequest.value = { ...item };
-};
+// Pinia store
+const store = useMainStore();
+const response = computed(() => store.response);
+const currentRequest = computed(() => store.currentRequest);
+const loading = computed(() => store.loading);
+const error = computed(() => store.error);
 
-// Sync history on mount
-history.value = loadHistory();
+// Add custom micro-interaction animation for error
+// UnoCSS: animate-shake (add to unocss.config if not present)
+
+/**
+ * Send HTTP request and update response panel using centralized state.
+ */
+async function sendRequest(request) {
+    store.setResponse(null);
+    store.setError('');
+    store.setLoading(true);
+    store.setRequest(request);
+    const start = performance.now();
+    try {
+        const res = await sendHttpRequest(request);
+        res.time = Math.round(performance.now() - start);
+        console.log('HTTP Response:', res);
+        store.setResponse(res);
+        saveRequest(request);
+    } catch (e) {
+        console.error('HTTP Error:', e);
+        store.setError(e.message || 'Request failed.');
+    } finally {
+        store.setLoading(false);
+        console.log('Loading set to false');
+    }
+}
 </script>
