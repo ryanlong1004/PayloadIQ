@@ -1,0 +1,13 @@
+/* Minimal modern CSS reset and base styles for UnoCSS */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background: #18181B;
+  color: #E0E0E0;
+}
+* {
+  box-sizing: inherit;
+}
