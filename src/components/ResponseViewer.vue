@@ -32,7 +32,9 @@
             <!-- Toggle Content -->
             <div v-if="showBody">
                 <pre
-                    class="bg-[#272822] rounded-xl p-4 text-[#a6e22e] text-sm mb-2 overflow-auto w-full transition-all duration-200 font-mono border border-[#a6e22e]">{{ response.body }}</pre>
+                    class="bg-[#272822] rounded-xl p-4 text-[#a6e22e] text-sm mb-2 overflow-x-auto w-full min-w-0 transition-all duration-200 font-mono border border-[#a6e22e]">
+    {{ formattedBody }}
+</pre>
                 <div
                     class="mt-2 flex flex-col sm:flex-row gap-2 sm:gap-8 items-start sm:items-center text-xs text-[#a6e22e]">
                     <span>Status: <span class="text-[#fd971f] font-bold">{{ response.status }}</span></span>
@@ -58,4 +60,15 @@ const store = useMainStore();
 const response = computed(() => store.response);
 const showBody = ref(true);
 const showHeaders = ref(false);
+
+const formattedBody = computed(() => {
+    if (!response.value || !response.value.body) return '';
+    try {
+        // Try to pretty-print JSON
+        return JSON.stringify(JSON.parse(response.value.body), null, 2);
+    } catch {
+        // Fallback to raw body
+        return response.value.body;
+    }
+});
 </script>
