@@ -161,7 +161,10 @@ function generateCurlCommand(request) {
     if (request.headers) {
         try {
             fetchObj.headers = typeof request.headers === 'string' ? JSON.parse(request.headers) : request.headers;
-        } catch { }
+        } catch (error) {
+            console.error('Failed to parse headers:', error);
+            fetchObj.headers = {};
+        }
     }
     if (request.body) {
         fetchObj.body = request.body;
