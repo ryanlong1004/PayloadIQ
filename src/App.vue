@@ -58,15 +58,15 @@ function toggleSidebar() {
         <nav class="w-full flex-1">
           <ul class="space-y-3 mt-6">
             <li
-              class="flex items-center gap-3 text-[#E0E0E0] hover:text-cyan-400 transition-all duration-200 ease-in-out cursor-pointer text-base font-semibold py-2 px-3 rounded-lg hover:bg-gray-800/60 hover:scale-110 drop-shadow-[0_0_8px_cyan] border-l-4 border-transparent hover:border-cyan-400">
+              class="flex items-center gap-3 text-[#E0E0E0] hover:text-cyan-400 transition-colors duration-150 cursor-pointer text-base font-semibold py-2 px-3 rounded-lg hover:bg-gray-800/60 border-l-4 border-transparent hover:border-cyan-400">
               <HomeIcon class="h-5 w-5" /> <span>Requests</span>
             </li>
             <li
-              class="flex items-center gap-3 text-[#E0E0E0] hover:text-purple-400 transition-all duration-200 ease-in-out cursor-pointer text-base font-semibold py-2 px-3 rounded-lg hover:bg-gray-800/60 hover:scale-110 drop-shadow-[0_0_8px_purple] border-l-4 border-transparent hover:border-purple-400">
+              class="flex items-center gap-3 text-[#E0E0E0] hover:text-purple-400 transition-colors duration-150 cursor-pointer text-base font-semibold py-2 px-3 rounded-lg hover:bg-gray-800/60 border-l-4 border-transparent hover:border-purple-400">
               <FolderIcon class="h-5 w-5" /> <span>Collections</span>
             </li>
             <li
-              class="flex items-center gap-3 text-[#E0E0E0] hover:text-green-400 transition-all duration-200 ease-in-out cursor-pointer text-base font-semibold py-2 px-3 rounded-lg hover:bg-gray-800/60 hover:scale-110 drop-shadow-[0_0_8px_lime] border-l-4 border-transparent hover:border-green-400">
+              class="flex items-center gap-3 text-[#E0E0E0] hover:text-green-400 transition-colors duration-150 cursor-pointer text-base font-semibold py-2 px-3 rounded-lg hover:bg-gray-800/60 border-l-4 border-transparent hover:border-green-400">
               <Cog6ToothIcon class="h-5 w-5" /> <span>Environments</span>
             </li>
           </ul>
@@ -75,7 +75,7 @@ function toggleSidebar() {
           <span class="text-xs text-cyan-400 font-bold uppercase tracking-wide pl-2 mb-2 block">History</span>
           <ul class="space-y-2 px-2 pb-2">
             <li v-for="item in historyItems" :key="item.id"
-              class="flex items-center gap-2 bg-gray-800/70 hover:bg-gray-800/90 rounded-lg px-3 py-2 transition-all duration-200 ease-in-out cursor-pointer shadow-sm border-l-4 border-transparent hover:border-cyan-400">
+              class="flex items-center gap-2 bg-gray-800/70 hover:bg-gray-800/90 rounded-lg px-3 py-2 transition-colors duration-150 cursor-pointer border-l-4 border-transparent hover:border-cyan-400">
               <span class="text-xs font-bold px-2 py-1 rounded bg-[#18181B] text-cyan-400">{{ item.method }}</span>
               <span class="text-gray-200 truncate flex-1">{{ item.endpoint }}</span>
               <span class="text-cyan-300 text-xs">{{ item.time }}</span>

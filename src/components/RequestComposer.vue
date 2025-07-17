@@ -1,6 +1,6 @@
 <template>
     <form @submit.prevent="onSend"
-        class="bg-gray-800/70 backdrop-blur-xl rounded-xl shadow-2xl border border-cyan-400 w-full max-w-xl mx-auto space-y-6 transition-all duration-200 animate-fade-in font-inter">
+        class="bg-gray-800/70 backdrop-blur-xl rounded-xl shadow-md border border-cyan-400 w-full max-w-xl mx-auto space-y-6 transition-all duration-200 animate-fade-in font-inter">
         <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
             <select v-model="localRequest.method"
                 class="bg-gray-900/80 border border-cyan-400 text-cyan-300 text-base rounded-xl px-3 py-2 focus:ring-2 focus:ring-cyan-500 transition-all duration-200 font-semibold shadow-md">
@@ -13,12 +13,11 @@
             <input v-model="localRequest.url" type="text" placeholder="Enter URL"
                 class="flex-1 bg-gray-900/80 border border-cyan-400 text-green-400 px-4 py-2 rounded-xl text-base focus:ring-2 focus:ring-cyan-500 transition-all duration-200 font-mono shadow-md" />
             <button type="submit"
-                class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white px-5 py-2 rounded-xl text-base font-bold shadow-xl transition-transform duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 drop-shadow-[0_0_8px_cyan]">Send
+                class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white px-5 py-2 rounded-xl text-base font-bold shadow-md transition-transform duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2">Send
                 Request</button>
         </div>
         <div>
-            <label for="headers-input"
-                class="block text-cyan-400 text-base font-semibold mb-2 drop-shadow-[0_0_8px_cyan]">Headers
+            <label for="headers-input" class="block text-cyan-400 text-base font-semibold mb-2">Headers
                 <span class="text-xs text-cyan-300 ml-2" title="Add custom headers as JSON">(e.g., {'Content-Type':
                     'application/json'})</span>
             </label>
@@ -27,8 +26,7 @@
                 placeholder='{ "Content-Type": "application/json" }' aria-label="Request headers"></textarea>
         </div>
         <div>
-            <label for="body-input"
-                class="block text-purple-400 text-base font-semibold mb-2 drop-shadow-[0_0_8px_purple]">Body
+            <label for="body-input" class="block text-purple-400 text-base font-semibold mb-2">Body
                 <span class="text-xs text-purple-300 ml-2" title="Enter JSON body for POST/PUT requests">(JSON
                     only)</span>
             </label>
