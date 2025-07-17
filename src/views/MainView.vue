@@ -150,7 +150,7 @@ async function sendRequest(request) {
  * @returns {string} - A string representing the cURL command.
  */
 function generateCurlCommand(request) {
-    // curlconverter expects a fetch/XHR/request object
+    // fetch-to-curl expects a fetch/XHR/request object
     // We'll build a fetch-like object from our request
     const fetchObj = {
         url: request.url,
