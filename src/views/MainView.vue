@@ -17,6 +17,18 @@
             <div class="flex items-center justify-between px-6 pt-6 pb-4">
                 <h2 class="text-lg md:text-xl font-bold text-purple-400 drop-shadow-[0_0_8px_purple]">Response</h2>
             </div>
+            <!-- Persistent Response Info Bar -->
+            <div class="flex gap-2 items-center px-6 pb-2">
+                <span v-if="response && response.status !== undefined"
+                    class="inline-block px-2 py-1 rounded-full bg-green-900 text-green-300 text-xs font-bold border border-green-400 shadow">Status:
+                    {{ response.status }}</span>
+                <span v-if="response && response.time !== undefined"
+                    class="inline-block px-2 py-1 rounded-full bg-blue-900 text-blue-300 text-xs font-bold border border-blue-400 shadow">Time:
+                    {{ response.time }} ms</span>
+                <span v-if="response && response.size !== undefined"
+                    class="inline-block px-2 py-1 rounded-full bg-pink-900 text-pink-300 text-xs font-bold border border-pink-400 shadow">Size:
+                    {{ response.size }} bytes</span>
+            </div>
             <div v-if="!collapsed.response" class="flex-1 flex flex-col min-h-0 px-6 pb-6 overflow-auto">
                 <template v-if="loading">
                     <div class="text-center text-cyan-400 py-8 animate-pulse">Loading...</div>
@@ -25,7 +37,7 @@
                     <div class="text-center text-red-400 py-8 animate-shake">{{ error }}</div>
                 </template>
                 <template v-else>
-                    <ResponseViewer :response="response" />
+                    <ResponseViewer :response="{ ...response, status: undefined, time: undefined, size: undefined }" />
                 </template>
             </div>
         </section>
@@ -40,9 +52,15 @@
                     <li v-for="item in store.history" :key="item.id"
                         class="flex items-center gap-2 bg-[#49483e]/70 hover:bg-[#49483e]/90 rounded-lg px-3 py-2 transition-colors duration-150 cursor-pointer border-l-4 border-transparent hover:border-[#a6e22e] max-w-full">
                         <span class="text-xs font-bold px-2 py-1 rounded bg-[#272822] text-[#a6e22e]">{{ item.method
-                            }}</span>
+                        }}</span>
                         <span class="text-[#f8f8f2] truncate flex-1 min-w-0">{{ item.endpoint }}</span>
                         <span class="text-[#fd971f] text-xs">{{ item.time }}</span>
+                        <span v-if="item.status !== undefined" class="text-green-400 text-xs font-mono">{{ item.status
+                        }}</span>
+                        <span v-if="item.responseTime !== undefined" class="text-blue-400 text-xs font-mono">{{
+                            item.responseTime }}ms</span>
+                        <span v-if="item.size !== undefined" class="text-pink-400 text-xs font-mono">{{ item.size
+                        }}B</span>
                     </li>
                 </ul>
             </div>
