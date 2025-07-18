@@ -65,7 +65,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines (coming soon).
 ## 💬 Community & Support
 
 - [Discussions](https://github.com/ryanlong1004/payload_iq/discussions)
-- [Issues](https://github.com/ryanlong1004/payload_iq/issues)
+- [Issues](https://github.com/ryanlong1004/PayloadIQ/issues)
 
 ## 📦 Roadmap & Ideas
 
