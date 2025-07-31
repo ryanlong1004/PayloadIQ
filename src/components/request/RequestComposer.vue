@@ -58,53 +58,42 @@
 
 <script setup>
 import { ref, watch } from 'vue';
-import { useMainStore } from '../store';
+import ParamsEditor from './ParamsEditor.vue';
+import AuthEditor from './AuthEditor.vue';
+import HeadersEditor from './HeadersEditor.vue';
+import BodyEditor from './BodyEditor.vue';
 
-const store = useMainStore();
-const emit = defineEmits(['send']);
-const localRequest = ref({ ...store.currentRequest });
+// Accept initialRequest as a prop
+const props = defineProps({
+    initialRequest: {
+        type: Object,
+        default: () => ({ method: 'GET', url: '', headers: {}, body: '' })
+    }
+});
+
+// Local copy of the request for editing
+const localRequest = ref({ ...props.initialRequest });
 
 // Tabs
 const tabs = ['Params', 'Authorization', 'Headers', 'Body'];
 const activeTab = ref('Params');
 
-import ParamsEditor from './ParamsEditor.vue';
-import AuthEditor from './AuthEditor.vue';
-import HeadersEditor from './HeadersEditor.vue';
-import BodyEditor from './request/BodyEditor.vue';
-// Params state
+// Params and Auth state
 const params = ref([]); // [{ key: '', value: '' }]
-
-// Authorization state
 const auth = ref('');
 
-watch(() => store.currentRequest, (val) => {
-    if (val) localRequest.value = { ...val };
-}, { immediate: true });
-
-function buildUrlWithParams(url, paramsArr) {
-    if (!paramsArr.length) return url;
-    const urlObj = new URL(url, url.startsWith('http') ? undefined : 'http://dummy');
-    paramsArr.forEach(({ key, value }) => {
-        if (key) urlObj.searchParams.append(key, value ?? '');
-    });
-    // Remove dummy origin if used
-    return urlObj.origin === 'http://dummy' ? urlObj.pathname + urlObj.search : urlObj.toString();
+// Emit send event with the current request when the form is submitted
+const emit = defineEmits(['send']);
+function onSend() {
+    // Build query string from params
+    const query = (params.value || [])
+        .filter(p => p.key)
+        .map(p => `${encodeURIComponent(p.key)}=${encodeURIComponent(p.value)}`)
+        .join('&');
+    let url = localRequest.value.url || '';
+    if (query) {
+        url = url.includes('?') ? `${url}&${query}` : `${url}?${query}`;
+    }
+    emit('send', { ...localRequest.value, url });
 }
-
-const onSend = () => {
-    // Merge params into URL
-    const urlWithParams = buildUrlWithParams(localRequest.value.url, params.value);
-    // Merge auth into headers if present
-    let headers = localRequest.value.headers;
-    try {
-        headers = headers ? (typeof headers === 'string' ? JSON.parse(headers) : { ...headers }) : {};
-    } catch {
-        headers = {};
-    }
-    if (auth.value) {
-        headers['Authorization'] = auth.value;
-    }
-    emit('send', { ...localRequest.value, url: urlWithParams, headers });
-};
 </script>

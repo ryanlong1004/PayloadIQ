@@ -60,17 +60,17 @@
                         @keydown.enter="selectHistory(item)" @keydown.space.prevent="selectHistory(item)"
                         @click="selectHistory(item)">
                         <span class="text-xs font-bold px-2 py-1 rounded bg-[#272822] text-[#a6e22e]">{{ item.method
-                        }}</span>
+                            }}</span>
                         <span class="text-[#f8f8f2] truncate flex-1 min-w-0">{{ item.endpoint }}</span>
                         <span class="text-[#fd971f] text-xs">{{ item.time }}</span>
                         <span v-if="item.status !== undefined" class="text-green-400 text-xs font-mono">{{ item.status
-                        }}</span>
+                            }}</span>
                         <span v-if="item.responseTime !== undefined" class="text-blue-400 text-xs font-mono">{{
                             item.responseTime }}ms</span>
                         <span v-if="item.size !== undefined" class="text-pink-400 text-xs font-mono">{{ item.size
-                        }}B</span>
+                            }}B</span>
                         <span class="text-gray-500 text-[10px] font-mono ml-2 select-all" title="UUID">{{ item.id
-                        }}</span>
+                            }}</span>
                     </li>
                 </ul>
             </div>
@@ -87,10 +87,10 @@
                     <li v-for="(entry, idx) in curlHistory.slice(0, 10)" :key="idx"
                         class="flex items-center group px-0 py-0 min-h-[2.5rem]">
                         <span class="text-[#66d9ef] font-mono text-xs px-2 select-none">#{{ curlHistory.length - idx
-                            }}</span>
+                        }}</span>
                         <span class="text-[#fd971f] font-mono text-[10px] px-2 select-none" :title="entry.time">{{
                             entry.time
-                            }}</span>
+                        }}</span>
                         <code
                             class="flex-1 text-[#f8f8f2] text-xs font-mono overflow-x-auto whitespace-nowrap truncate bg-transparent px-0 py-0"
                             tabindex="0" :title="entry.cmd">{{ entry.cmd }}</code>
@@ -110,7 +110,7 @@
 import { ref, computed } from 'vue';
 import fetchToCurl from 'fetch-to-curl';
 import { useMainStore } from '../store';
-import RequestComposer from '../components/RequestComposer.vue';
+import RequestComposer from '../components/request/RequestComposer.vue';
 import ResponseViewer from '../components/ResponseViewer.vue';
 import { sendHttpRequest } from '../utils/api';
 import { saveRequest } from '../utils/storage';
