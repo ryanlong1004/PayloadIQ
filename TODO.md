@@ -48,27 +48,27 @@
 
 ## TODO
 
-- [ ] Implement robust environment/variable management
-- [ ] Optimize CPU/RAM usage for desktop and web
-- [ ] Add tab grouping, multi-select, and organization features
-- [ ] Improve import/export for collections, environments, cURL
-- [ ] Add auto-save and recovery for unsaved requests/tabs
-- [ ] Enhance response viewer (scroll position, clarity, preview modes)
-- [ ] Add authorization tab to saved responses
-- [ ] Fix header/body encoding and handling bugs
-- [ ] Support bulk/batch import/export
-- [ ] Clarify workspace and environment navigation
-- [ ] Improve secrets/environment dialog UX
-- [ ] Add sync support (Firebase, Git, etc.)
-- [ ] Support ARM64 and other platforms
-- [ ] Add WebSocket and gRPC support and fix related bugs
-- [ ] Make export/import dialogs accessible on all screen sizes
-- [ ] Add auto/live sync API documentation feature
-- [ ] Fix request history saving and recovery
-- [ ] Improve cookie handling
-- [ ] Fix proxy configuration bugs
-- [ ] Add performance test result enhancements
-- [ ] Fix UI scaling issues (icons, panels)
-- [ ] Add keyboard shortcuts for all major actions
-- [ ] Enhance plugin/extensibility system
-- [ ] Improve theming and accessibility
+- [x] Implement robust environment/variable management
+- [x] Optimize CPU/RAM usage for desktop and web
+- [x] Add tab grouping, multi-select, and organization features
+- [x] Improve import/export for collections, environments, cURL
+- [x] Add auto-save and recovery for unsaved requests/tabs
+- [x] Enhance response viewer (scroll position, clarity, preview modes)
+- [x] Add authorization tab to saved responses
+- [x] Fix header/body encoding and handling bugs
+- [x] Support bulk/batch import/export
+- [x] Clarify workspace and environment navigation
+- [x] Improve secrets/environment dialog UX
+- [x] Add sync support (Firebase, Git, etc.)
+- [x] Support ARM64 and other platforms
+- [x] Add WebSocket and gRPC support and fix related bugs
+- [x] Make export/import dialogs accessible on all screen sizes
+- [x] Add auto/live sync API documentation feature
+- [x] Fix request history saving and recovery
+- [x] Improve cookie handling
+- [x] Fix proxy configuration bugs
+- [x] Add performance test result enhancements
+- [x] Fix UI scaling issues (icons, panels)
+- [x] Add keyboard shortcuts for all major actions
+- [x] Enhance plugin/extensibility system
+- [x] Improve theming and accessibility

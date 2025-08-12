@@ -25,11 +25,19 @@
                     class="bg-gray-600 text-white px-3 py-1 rounded text-xs">Cancel</button>
             </div>
         </div>
+        <div class="flex gap-2 mt-2">
+            <button @click="exportCollections"
+                class="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs font-semibold shadow">Export</button>
+            <input type="file" @change="importCollections" accept="application/json" class="hidden" ref="importInput" />
+            <button @click="triggerImport"
+                class="bg-yellow-600 hover:bg-yellow-700 text-white px-2 py-1 rounded text-xs font-semibold shadow">Import</button>
+        </div>
+        <div v-if="showImportError" class="text-red-400 text-xs mt-2">{{ importErrorMsg }}</div>
     </aside>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useMainStore } from '../store';
 
 const store = useMainStore();
@@ -37,6 +45,9 @@ const collections = computed(() => store.collections);
 const activeCollectionId = computed(() => store.activeCollectionId);
 const showAdd = ref(false);
 const newName = ref('');
+const importInput = ref(null);
+const showImportError = ref(false);
+const importErrorMsg = ref('');
 
 function add() {
     if (!newName.value.trim()) return;
@@ -54,4 +65,57 @@ function remove(id) {
 function setActive(id) {
     store.setActiveCollection(id);
 }
+function exportCollections() {
+    const dataStr = JSON.stringify(collections.value, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'collections.json';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+function triggerImport() {
+    importInput.value.click();
+}
+function importCollections(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+        try {
+            const imported = JSON.parse(ev.target.result);
+            if (!Array.isArray(imported)) throw new Error('Invalid format');
+            imported.forEach(col => {
+                if (!col.id) col.id = Date.now().toString() + Math.random();
+                store.addCollection(col);
+            });
+            showImportError.value = false;
+        } catch (err) {
+            showImportError.value = true;
+            importErrorMsg.value = 'Import failed: ' + (err.message || 'Invalid file');
+        }
+    };
+    reader.readAsText(file);
+}
+
+watch(collections, (cols) => {
+    localStorage.setItem('unsaved_collections', JSON.stringify(cols));
+}, { deep: true });
+
+onMounted(() => {
+    const savedCols = localStorage.getItem('unsaved_collections');
+    if (savedCols) {
+        try {
+            const cols = JSON.parse(savedCols);
+            if (Array.isArray(cols) && cols.length) {
+                cols.forEach(col => {
+                    if (!collections.value.find(c => c.id === col.id)) {
+                        store.addCollection(col);
+                    }
+                });
+            }
+        } catch { }
+    }
+});
 </script>
